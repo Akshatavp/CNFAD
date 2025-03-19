@@ -1,0 +1,379 @@
+
+program 8 th 
+
+
+
+PROG 4 -
+Product.java
+package com.example.fourthprog;
+
+public class Product {
+int id,price;
+String name;
+public int getId() {
+return id;
+}
+
+public void setId(int id) {
+this.id = id;
+}
+public int getPrice() {
+return price;
+}
+public void setPrice(int price) {
+this.price = price;
+}
+public String getName() {
+return name;
+}
+public void setName(String name) {
+this.name = name;
+}
+
+@Override
+public String toString() {
+return "Product [id=" + id + ", price=" + price + ", name=" + name + "]";
+}
+}
+
+ProductController.java
+package com.example.fourthprog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.fourthprog.Product;
+
+@RestController
+@RequestMapping("/product")
+public class ProductController {
+
+List<Product> plist = new ArrayList<Product>();
+
+@GetMapping
+public List<Product> getProduct(){
+return plist;
+}
+
+@PostMapping
+public List<Product> postProduct(@RequestBody Product product){
+plist.add(product);
+return plist;
+}
+
+@DeleteMapping("/{id}")
+public List<Product> deleteProduct(@PathVariable int id){
+for (Product p:plist) {
+if (id == p.getId()) {
+plist.remove(p);
+}
+}
+return plist;
+}
+
+@PutMapping
+public List<Product> putProduct(@RequestBody Product product){
+for (Product p:plist) {
+if (product.getId() == p.getId()) {
+p.setName(product.getName());
+p.setPrice(product.getPrice());
+break;
+}
+}
+return plist;
+}
+
+}
+
+
+LabfourthApplication.java
+package com.example.fourthprog;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class LabfourthApplication {
+
+public static void main(String[] args) {
+SpringApplication.run(LabfourthApplication.class, args);
+}
+
+}
+
+
+
+
+
+
+1. create a docker file
+
+FROM openjdk:20-ea-1-jdk-slim
+WORKDIR /opt
+
+#hear add the location of jar file 
+COPY target/*.jar app.jar                                          
+#build jar file path after maven install
+
+ENTRYPOINT [ "java","-jar","app.jar"]
+
+
+
+
+
+2.run  mavin install 
+
+
+6.change the directory to the path of program 
+
+7. build the docker file 
+ docker build -t prog8 .
+
+8.docker run -idtp 8080:8080 prog8
+
+
+9.post command 
+curl -X POST -H "Content-Type: application/json" -d '{"id":1,"price":1200,"name":"kshiitj"}' http://localhost:8080/product
+
+
+10. put command
+curl -X PUT -H "Content-Type: application/json" -d '{"id":2,"price":100,"name":"lodu"}' http://localhost:8080/product
+
+
+
+
+11.delete command 
+curl -X DELETE http://localhost:8080/product/2
+
+
+12.get command 
+curl -X GET http://localhost:8080/product 
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+10 th program 
+
+
+
+program3
+
+package com.example.CNFAD_profram3;
+
+public class Book {
+	
+	int id;
+	String author , year , title;
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
+	public String getTitle() 
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	@Override
+	public String toString() {
+		return "Book [id=" + id + ", author=" + author + ", year=" + year + ", title=" + title + "]";
+	}
+	
+	
+
+}
+
+
+
+
+
+
+
+bookcontroller.java
+
+package com.example.CNFAD_profram3;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+	@RequestMapping("/book")
+	public class bookController{
+	List <Book> blist= new ArrayList<Book>();
+	 
+	
+	@GetMapping
+	public List<Book>getBook(){
+		return blist;
+	}
+		
+	
+	
+	@PostMapping
+	public List<Book>postBook(@RequestBody Book book){
+		blist.add(book);
+		return blist;
+	}
+		
+	}
+
+
+
+
+
+10 steps
+
+1. create a docker file 
+
+FROM openjdk:20-ea-1-jdk-slim
+WORKDIR /opt
+
+COPY target/CNFAD_profram3-0.0.1-SNAPSHOT.jar app.jar
+
+ENTRYPOINT [ "java","-jar","app.jar"]
+
+
+
+2. run maven install
+
+
+3.   minikube start
+4. minikube status
+
+
+5. eval $(minikube docker-env)
+
+
+6. change the directory to program directory 
+
+
+7.docker build -t prog10 .
+
+
+
+do docker images 
+
+8. create a yaml file 
+ kuber.yml
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: cnfad_profram3:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+spec:
+  type: NodePort
+  selector:
+    app: myapp
+  ports:
+  - port: 8080
+    targetPort: 8080
+
+
+
+
+in kuber.yml file change the image name with your image name 
+
+
+
+9. kubectl apply -f kuber.yml
+
+10. minikube service myapp-service
+
+in the url put /book
+
+
+11. open a new terminal 
+
+minikube dashboard
+
+
+deployment -> scale -> 4 -> scale (save )
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
